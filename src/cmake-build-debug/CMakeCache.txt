@@ -17,6 +17,7 @@
 //The directory containing a CMake configuration file for Boost.
 Boost_DIR:PATH=/opt/homebrew/lib/cmake/Boost-1.87.0
 
+
 //Path to a file.
 Boost_INCLUDE_DIR:PATH=/opt/homebrew/include
 
