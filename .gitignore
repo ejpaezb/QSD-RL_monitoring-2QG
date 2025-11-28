@@ -1,2 +1,4 @@
 .DS_Store
 /src/cmake-build-debug
+/.idea
+*.pyc
