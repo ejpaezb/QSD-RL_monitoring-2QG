@@ -123,7 +123,7 @@ class IonTrapEnv(gym.Env):
         # modulus_2 = np.sqrt((x_1_op - x_1_ideal[idx_AM]) ** 2 + (p_1_op - p_1_ideal[idx_AM]) ** 2)
         # modulus_3 = np.sqrt((x_2_op - x_2_ideal[idx_AM]) ** 2 + (p_2_op - p_2_ideal[idx_AM]) ** 2)
         # mod = 10*(1.0*np.sqrt(x_0_op**2 + p_0_op**2) + 1.0*np.sqrt(x_1_op**2 + p_1_op**2) + 1.0*np.sqrt(x_2_op**2 + p_2_op**2))
-        mod = np.pi * (1.0*(x_0_op**2 + p_0_op**2)**1 + 9.0*(x_1_op**2 + p_1_op**2)**1 + 9.0*(x_2_op**2 + p_2_op**2)**1)
+        mod = np.pi * (2*(x_0_op**2 + p_0_op**2)**1 + 5.0*(x_1_op**2 + p_1_op**2)**1 + 4.0*(x_2_op**2 + p_2_op**2)**1)
         # self.lastmod += mod
 
         # mod = 10.0 * (1.0 * modulus_1 + 1.0 * modulus_2 + 1.0 * modulus_3)
@@ -150,16 +150,18 @@ class IonTrapEnv(gym.Env):
                 costs -= 4.0 * fidelity
             elif fidelity < 0.95:
                 costs -= 5.0 * fidelity
-            elif fidelity < 0.97:
+            elif fidelity < 0.96:
                 costs -= 6.0 * fidelity
-            elif fidelity < 0.98:
+            elif fidelity < 0.97:
                 costs -= 7.0 * fidelity
+            elif fidelity < 0.98:
+                costs -= 8.0 * fidelity
             elif fidelity < 0.985:
                 costs -= 9.0 * fidelity
             elif fidelity < 0.99:
                 costs -= 10.0 * fidelity
             else:
-                costs -= 12.0 * fidelity
+                costs -= 11.0 * fidelity
         # if fidelity is not None:
         #
         #     if np.abs(fidelity-0.5) < 0.1:

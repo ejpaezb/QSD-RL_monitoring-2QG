@@ -1898,7 +1898,6 @@ void ion_trap::initialize_H() {
             std::vector<qsd::ComplexFunction> exp_iomegat_c_m(h_cfg.n_ions);
 
 
-
             int MS_ions;
 
             if (h_cfg.monitoring_status){MS_ions = h_cfg.n_interacting_ions-1;} //interacting ions is greater by one to ensure proper initialization of operators (sx,sy, etc.) for spectator ion
@@ -1948,9 +1947,9 @@ void ion_trap::initialize_H() {
             std::vector<qsd::Operator> beta_s(1);
             for (int k = 0; k < h_cfg.n_ions; k++) {
                 if (k == 0) {
-                    beta_s[0] =  IM *eta_list[k][h_cfg.spectator] * (a[k] * exp_iomegat_m_s[k] + ad[k] * exp_iomegat_p_s[k]);
+                    beta_s[0] =  IM * eta_list[k][h_cfg.spectator] * 0.5 * (a[k] * exp_iomegat_m_s[k] + ad[k] * exp_iomegat_p_s[k]);
                 } else {
-                    beta_s[0] +=  IM *eta_list[k][h_cfg.spectator] * (a[k] * exp_iomegat_m_s[k] + ad[k] * exp_iomegat_p_s[k]);
+                    beta_s[0] += IM * eta_list[k][h_cfg.spectator] * 0.5 * (a[k] * exp_iomegat_m_s[k] + ad[k] * exp_iomegat_p_s[k]);
                 }
             }
 
@@ -1972,12 +1971,12 @@ void ion_trap::initialize_H() {
 
                     if (!h_cfg.carrier_status) {
 						if (n == 1) {
-							_H = (I_n / double(n_factorial)) * beta_n * (n % 2 ? (mIm * sx[j]) : sy[j]); // n is odd ? (if odd) : (if even)
+							_H = (I_n / double(n_factorial)) * beta_n * (n % 2 ? (mIM * sx[j]) : sy[j]); // n is odd ? (if odd) : (if even)
 						} else {
-							_H += (I_n / double(n_factorial)) * beta_n * (n % 2 ? (mIm * sx[j]) : sy[j]); // n is odd ? (if odd) : (if even)
+							_H += (I_n / double(n_factorial)) * beta_n * (n % 2 ? (mIM * sx[j]) : sy[j]); // n is odd ? (if odd) : (if even)
                         }
                     } else {
-                        _H += (I_n / double(n_factorial)) * beta_n * (n % 2 ? (mIm * sx[j]) : sy[j]); // n is odd ? (if odd) : (if even)
+                        _H += (I_n / double(n_factorial)) * beta_n * (n % 2 ? (mIM * sx[j]) : sy[j]); // n is odd ? (if odd) : (if even)
                     }
 
                     I_n *= IM;
@@ -2012,8 +2011,8 @@ void ion_trap::initialize_H() {
 
             // Adding the spectator ions for continuous monitoring
             if (h_cfg.monitoring_status){
-//                std::cout<<"sd";
-                H += TWOPI * 0.5 * Rabi_s * ( sp[h_cfg.spectator] * exp_iomegat_c_m[h_cfg.spectator] + sm[h_cfg.spectator] * exp_iomegat_c_p[h_cfg.spectator] );
+                // std::cout<<"sd";
+                H += TWOPI * 0.5 * 0.98 * Rabi_s * ( sp[h_cfg.spectator] * exp_iomegat_c_m[h_cfg.spectator] + sm[h_cfg.spectator] * exp_iomegat_c_p[h_cfg.spectator] );
                 H += TWOPI * 0.5 * Rabi_s * ( sp[h_cfg.spectator] * beta_s[0] + sm[h_cfg.spectator] * beta_s[0].hc() );
             }
 
@@ -2386,10 +2385,12 @@ void ion_trap::initialize_L() {
                 }
             }
 
+			double spect_eta;
             //Position operator measurement
             if (l_cfg.position_operator) {
+            	spect_eta = 0.1;
                 for (int i = 0; i < h_cfg.n_ions; i++) {
-                    L.emplace_back(sqrt(l_cfg.position_meas_coupling/2) * eta_list[i][h_cfg.spectator] * x[i]);  // Measurement of X of the ith ion
+                    L.emplace_back(sqrt(l_cfg.position_meas_coupling/2) * spect_eta * eta_list[i][h_cfg.spectator] * x[i]);  // Measurement of X of the ith ion
                     // L.emplace_back(IM*sqrt(3e-6) * eta_list[i][h_cfg.spectator] * x[i]);  // Measurement of X of the ith ion
                 }
             }
@@ -2433,17 +2434,17 @@ void ion_trap::initialize_L() {
             }
 
     // ****************************************** Doppler dynamics ******************************************
-        	double gamma_s = TWOPI*19.0;
+        	double gamma_s = TWOPI*19.0/2.0;
         	int scale = 1;
 
         	// Spontaneous decay from upper to ground state
-        	if (true) {
-        		L.emplace_back(sqrt(gamma_s) * sm[h_cfg.spectator]); //spontaneous decay spectator ion
+        	if (false) {
+        		L.emplace_back(sqrt(gamma_s/2.0) * sm[h_cfg.spectator]); //spontaneous decay spectator ion
         	}
 
         	if (true) {
         		for (int i = 0; i < 3; i++) {
-        			L.emplace_back(sqrt(2.0/5.0) * sqrt(gamma_s) * eta_list[2][i] * (ad[i] + a[i])* (Im*sm[h_cfg.spectator]));  // Cooling of the spectator ion all modes
+        			L.emplace_back(sqrt(2.0/5.0) * sqrt(gamma_s/2.0) * eta_list[2][i] * (ad[i] + a[i])* (sm[h_cfg.spectator]));  // Cooling of the spectator ion all modes
         		}
         	}
 
