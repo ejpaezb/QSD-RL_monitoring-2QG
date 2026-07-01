@@ -2442,7 +2442,7 @@ void ion_trap::initialize_L() {
         		L.emplace_back(sqrt(gamma_s/2.0) * sm[h_cfg.spectator]); //spontaneous decay spectator ion
         	}
 
-        	if (true) {
+        	if (true){
         		for (int i = 0; i < 3; i++) {
         			L.emplace_back(sqrt(2.0/5.0) * sqrt(gamma_s/2.0) * eta_list[2][i] * (ad[i] + a[i])* (sm[h_cfg.spectator]));  // Cooling of the spectator ion all modes
         		}
