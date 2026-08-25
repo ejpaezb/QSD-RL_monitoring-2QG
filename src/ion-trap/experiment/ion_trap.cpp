@@ -1871,7 +1871,6 @@ void ion_trap::initialize_H() {
 				_H *= omega[j];
 				_H *= exp_imut_m[j];
 
-
 				if (j == 0) {
 					H = _H;
 				} else {
